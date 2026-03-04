@@ -1,6 +1,16 @@
-# D2VR: Diffusion-Based Video Super-Resolution
+# D²-VR: Degradation-Robust and Distilled Video Restoration with Synergistic Optimization Strategy
 
-A video super-resolution framework built on top of diffusion models. It employs a **ControlNet** to inject temporally consistent guidance (via optical-flow warping of the previous frame reconstruction) and trains the model with a combination of adversarial loss, reconstruction loss, and a temporal LPIPS (tLPIPS) consistency loss.
+This repository contains the official PyTorch implementation of D²-VR.
+
+<img width="1723" height="978" alt="image" src="https://github.com/user-attachments/assets/3d640a10-4dcd-4869-b7b6-f9084636290d" />
+
+# Some Information
+
+[Paper](https://arxiv.org/pdf/2602.08395) · [Project Page (coming soon)](www.example.com)
+
+# News
+
+* [2026.2] Our pre-print paper is released on arXiv.
 
 ## Architecture Overview
 
@@ -115,6 +125,7 @@ Key inference arguments:
 | `--unet_ckpt` | Path to the UNet checkpoint folder |
 | `--model_path` | Path to the base diffusion model (VAE, text encoder, tokenizer) |
 | `--of_model` | Optical flow model to use (default: `DRFA`) |
+| `--of_pretrained` | Pretrained Optical flow model to use |
 | `--scheduler` | Noise scheduler: `DDPM` (default), `EulerAncestralDiscrete`, `LMSDiscrete` |
 
 ## Evaluation

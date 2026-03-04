@@ -30,7 +30,7 @@ class REDSDataset(data.Dataset):
         
         if os.path.exists(opt['meta_info_file']) and os.path.getsize(opt['meta_info_file']) > 0:
             logger = get_root_logger()
-            logger.info(f"从元数据文件加载: {opt['meta_info_file']}")
+            logger.info(f"Loading from metadata file: {opt['meta_info_file']}")
             
             with open(opt['meta_info_file'], 'r') as fin:
                 for line in fin:
@@ -45,25 +45,25 @@ class REDSDataset(data.Dataset):
                         folder_path = self.gt_root / folder
                         
                         if not folder_path.exists():
-                            print(f"警告: 文件夹不存在 {folder_path}，跳过")
+                            print(f"Warning: folder not found {folder_path}, skipping")
                             continue
                             
                         try:
                             frame_files = sorted([f for f in os.listdir(folder_path) if f.lower().endswith('.png')],
                                             key=lambda x: int(x.split('.')[0]))
                         except Exception as e:
-                            print(f"警告: 读取文件夹出错 {folder_path}: {e}，跳过")
+                            print(f"Warning: error reading folder {folder_path}: {e}, skipping")
                             continue
 
                         if not frame_files:
-                            print(f"警告: 文件夹中没有PNG文件 {folder_path}，跳过")
+                            print(f"Warning: no PNG files in {folder_path}, skipping")
                             continue
 
                         self.frame_names[folder] = frame_files
         else:
             logger = get_root_logger()
-            logger.error(f"元数据文件不存在或为空: {opt['meta_info_file']}")
-            raise FileNotFoundError(f"元数据文件不存在或为空: {opt['meta_info_file']}")
+            logger.error(f"Metadata file not found or empty: {opt['meta_info_file']}")
+            raise FileNotFoundError(f"Metadata file not found or empty: {opt['meta_info_file']}")
         
         self.keys = []
         for folder in self.folders:
@@ -85,9 +85,9 @@ class REDSDataset(data.Dataset):
         self.random_reverse = opt.get('random_reverse', False)
         interval_str = ','.join(str(x) for x in self.interval_list)
         logger = get_root_logger()
-        logger.info(f'时间增强间隔列表: [{interval_str}]; '
-                    f'随机反转: {self.random_reverse}.')
-        logger.info(f'找到 {len(self.keys)} 个有效训练样本')
+        logger.info(f'Temporal augmentation interval list: [{interval_str}]; '
+                    f'random_reverse: {self.random_reverse}.')
+        logger.info(f'Found {len(self.keys)} valid training samples')
 
     def __getitem__(self, index):
         if self.file_client is None:
@@ -121,21 +121,21 @@ class REDSDataset(data.Dataset):
             try:
                 img_lq = cv2.imread(str(img_lq_path))
                 if img_lq is None:
-                    raise FileNotFoundError(f"无法读取图像: {img_lq_path}")
+                    raise FileNotFoundError(f"Cannot read image: {img_lq_path}")
                 img_lq = img_lq.astype(np.float32) / 255.
                 img_lqs.append(img_lq)
             except Exception as e:
-                print(f"无法读取LQ图像 {img_lq_path}: {e}")
+                print(f"Cannot read LQ image {img_lq_path}: {e}")
                 return self.__getitem__(random.randint(0, len(self) - 1))
             
             try:
                 img_gt = cv2.imread(str(img_gt_path))
                 if img_gt is None:
-                    raise FileNotFoundError(f"无法读取图像: {img_gt_path}")
+                    raise FileNotFoundError(f"Cannot read image: {img_gt_path}")
                 img_gt = img_gt.astype(np.float32) / 255.
                 img_gts.append(img_gt)
             except Exception as e:
-                print(f"无法读取GT图像 {img_gt_path}: {e}")
+                print(f"Cannot read GT image {img_gt_path}: {e}")
                 return self.__getitem__(random.randint(0, len(self) - 1))
         
         img_gts, img_lqs = paired_random_crop(img_gts, img_lqs, gt_size, scale, str(img_gt_path))

@@ -92,7 +92,7 @@ EXAMPLE_DOC_STRING = """
 """
 
 
-class StableVSRPipeline(
+class D2VRPipeline(
     DiffusionPipeline, TextualInversionLoaderMixin, LoraLoaderMixin, FromSingleFileMixin
 ):
     r"""

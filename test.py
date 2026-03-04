@@ -1,4 +1,4 @@
-from pipeline.stablevsr_pipeline import StableVSRPipeline
+from pipeline.d2vr_pipeline import D2VRPipeline
 #from diffusers import EulerAncestralDiscreteScheduler, ControlNetModel
 from diffusers import ControlNetModel, UNet2DConditionModel
 #from diffusers import DDPMScheduler, ControlNetModel, UNet2DConditionModel
@@ -44,11 +44,11 @@ for arg, value in vars(args).items():
 set_seed(42)
 gpu_id = args.gpu_id
 device = torch.device(f'cuda:{gpu_id}' if torch.cuda.is_available() else 'cpu')
-print(f"使用设备: {device}")
+print(f"Using device: {device}")
 
 model_id = args.model_path
 
-print(f"模型目录内容: {os.listdir(model_id)}")
+print(f"Model directory contents: {os.listdir(model_id)}")
 
 controlnet_model = ControlNetModel.from_pretrained(args.controlnet_ckpt if args.controlnet_ckpt is not None else f"{model_id}/controlnet", local_files_only=True)
 #controlnet_model = ControlNetModel.from_pretrained(args.controlnet_ckpt if args.controlnet_ckpt is not None else model_id, subfolder='Cnet') # your own controlnet model
@@ -59,7 +59,7 @@ vae = AutoencoderKL.from_pretrained(model_id, subfolder="vae", local_files_only=
 text_encoder = CLIPTextModel.from_pretrained(model_id, subfolder="text_encoder", local_files_only=True)
 tokenizer = CLIPTokenizer.from_pretrained(model_id, subfolder="tokenizer", local_files_only=True)
 
-pipeline = StableVSRPipeline(
+pipeline = D2VRPipeline(
     vae=vae,
     text_encoder=text_encoder,
     tokenizer=tokenizer,
@@ -71,7 +71,7 @@ pipeline = StableVSRPipeline(
     requires_safety_checker=False
 )
 
-#pipeline = StableVSRPipeline.from_pretrained(model_id, controlnet=controlnet_model, unet=unet)
+#pipeline = D2VRPipeline.from_pretrained(model_id, controlnet=controlnet_model, unet=unet)
 
 if args.scheduler == "LMSDiscrete":
     from diffusers import LMSDiscreteScheduler
@@ -83,7 +83,7 @@ elif args.scheduler == "DDPM":
     from diffusers import DDPMScheduler
     scheduler = DDPMScheduler.from_pretrained(model_id, subfolder='scheduler_ddpm', local_files_only=True)
 else:
-    raise ValueError(f"不支持的scheduler类型: {args.scheduler}")
+    raise ValueError(f"Unsupported scheduler type: {args.scheduler}")
 
 pipeline.scheduler = scheduler
 pipeline = pipeline.to(device)
@@ -300,10 +300,10 @@ elif args.of_model == "DRFA":
 else:
     raise ValueError(f"Unsupported optical flow model: {args.of_model}. Please choose from 'RAFT', 'GMFlow', 'FlowFormerPP', 'GMA', or 'DRFA'")
 
-print(f"加载后的scheduler类型: {type(pipeline.scheduler).__name__}")
-print(f"scheduler配置: {pipeline.scheduler.config}")
+print(f"Loaded scheduler type: {type(pipeline.scheduler).__name__}")
+print(f"Scheduler config: {pipeline.scheduler.config}")
 
-assert pipeline.unet == unet, "Pipeline中的unet与预期不符"
+assert pipeline.unet == unet, "Pipeline unet does not match expected"
 
 # iterate for every video sequence in the input folder
 seqs = sorted(os.listdir(args.in_path))
