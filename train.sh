@@ -1,0 +1,22 @@
+python train.py \
+  --pretrained_model_name_or_path="claudiom4sir/StableVSR" \
+  --pretrained_vae_model_name_or_path="claudiom4sir/StableVSR" \
+  --controlnet_model_name_or_path="/remote-home/share/liangjianfeng/stablevsr/StableVSR/controlnet/" \
+  --unet_model_name_or_path="/remote-home/share/liangjianfeng/stablevsr/StableVSR/unet/" \
+  --output_dir="/remote-home/share/liangjianfeng/D2VR/delight/ckpt/REDS+SC+all/" \
+  --logging_dir="/remote-home/share/liangjianfeng/D2VR/delight/ckpt/REDS+SC+all/logs/0126/" \
+  --dataset_config_path="/remote-home/huqiang/liangjianfeng/d-2-vr/dataset/REDS/config_test.yaml" \
+  --degradation_params_json ./degradation/degradation_params.json \
+  --G_lr=1e-5 \
+  --D_lr=1e-5 \
+  --validation_steps=1000 \
+  --train_batch_size=4 \
+  --adv_weight=0.05 \
+  --tlpips_weight=0.1 \
+  --num_ts=4 \
+  --dataloader_num_workers=8 \
+  --max_train_steps=40000 \
+  --checkpointing_steps=1000 \
+  --train_unet \
+  --train_controlnet \
+  --of_model="DRFA"
