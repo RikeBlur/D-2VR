@@ -7,37 +7,36 @@ import torch
 import json
 
 def load_degradation_params_from_json(json_path):
-    """Load degradation parameters from a JSON file.
+    """从JSON文件加载退化参数
     
     Args:
-        json_path: Path to the JSON file.
+        json_path: JSON文件路径
         
     Returns:
-        dict: Dictionary containing degradation parameters.
+        dict: 包含退化参数的字典
     """
     try:
         with open(json_path, 'r', encoding='utf-8') as f:
             params = json.load(f)
         return params
     except FileNotFoundError:
-        print(f"Warning: JSON file not found: {json_path}, using default parameters.")
+        print(f"警告: 找不到JSON文件 {json_path}，将使用默认参数")
         return {}
     except json.JSONDecodeError:
-        print(f"Warning: JSON file {json_path} is malformed, using default parameters.")
+        print(f"警告: JSON文件 {json_path} 格式错误，将使用默认参数")
         return {}
 
 def sample_parameter(param_config):
-    """Sample a value from a parameter configuration.
+    """从参数配置中采样一个值
     
     Args:
-        param_config: Parameter config. Can be a scalar, a continuous range [min, max],
-            or a discrete list to sample from.
-            - Scalar: returned as-is, e.g. 5 or 1.5
-            - Continuous range: list of two floats [min, max], e.g. [0.5, 2.0]
-            - Discrete list: any other list, e.g. [1, 3] or [1, 2, 3]
+        param_config: 参数配置，可以是单个值、范围[min, max]或离散值列表
+        - 单个值: 直接返回该值，如 5 或 1.5
+        - 连续范围: 两个浮点数的列表 [min, max]，如 [0.5, 2.0]
+        - 离散列表: 其他情况，如 [1, 3] 或 [1, 2, 3]，从中随机选择
         
     Returns:
-        Sampled parameter value.
+        采样得到的参数值
     """
     if isinstance(param_config, (int, float)):
         return param_config
@@ -49,27 +48,27 @@ def sample_parameter(param_config):
         else:
             return random.choice(param_config)
     else:
-        raise ValueError(f"Unsupported parameter config format: {param_config}")
+        raise ValueError(f"不支持的参数配置格式: {param_config}")
 
 def apply_degradation(img, blur_kernel_size=None, blur_sigma=None, noise_sigma=None, jpeg_quality=None, 
                      second_order=False, blur_kernel_size_2=None, blur_sigma_2=None, noise_sigma_2=None, jpeg_quality_2=None,
                      downsample_scale=None, downsample_scale_2=None, params_json_path=None):
-    """Apply degradation pipeline to an image.
+    """对图像应用退化
     
     Args:
-        img: Input image (numpy array).
-        blur_kernel_size: Gaussian blur kernel size for the first pass.
-        blur_sigma: Gaussian blur sigma for the first pass (auto-computed if None).
-        noise_sigma: Noise standard deviation for the first pass.
-        jpeg_quality: JPEG compression quality for the first pass.
-        second_order: Whether to apply a second-order degradation pass.
-        blur_kernel_size_2: Gaussian blur kernel size for the second pass.
-        blur_sigma_2: Gaussian blur sigma for the second pass (auto-computed if None).
-        noise_sigma_2: Noise standard deviation for the second pass.
-        jpeg_quality_2: JPEG compression quality for the second pass.
-        downsample_scale: Downsampling scale factor for the first pass.
-        downsample_scale_2: Downsampling scale factor for the second pass.
-        params_json_path: Optional path to a JSON file containing degradation parameters.
+        img: 输入图像
+        blur_kernel_size: 第一轮模糊核大小
+        blur_sigma: 第一轮高斯模糊的标准差sigma（若为None则自动计算）
+        noise_sigma: 第一轮噪声标准差
+        jpeg_quality: 第一轮JPEG压缩质量
+        second_order: 是否应用二阶退化
+        blur_kernel_size_2: 第二轮模糊核大小
+        blur_sigma_2: 第二轮高斯模糊的标准差sigma（若为None则自动计算）
+        noise_sigma_2: 第二轮噪声标准差
+        jpeg_quality_2: 第二轮JPEG压缩质量
+        downsample_scale: 第一轮下采样倍率
+        downsample_scale_2: 第二轮下采样倍率
+        params_json_path: JSON参数文件路径（可选）
     """
     if params_json_path:
         json_params = load_degradation_params_from_json(params_json_path)
@@ -97,14 +96,14 @@ def apply_degradation(img, blur_kernel_size=None, blur_sigma=None, noise_sigma=N
         if 'downsample_scale_2' in json_params:
             downsample_scale_2 = json_params['downsample_scale_2']
         
-        print(f"Loaded parameters from JSON: {params_json_path}")
-        print(f"Sampled params: blur1={blur_kernel_size}, sigma1={blur_sigma}, noise1={noise_sigma}, jpeg1={jpeg_quality}")
+        print(f"从JSON文件加载参数: {params_json_path}")
+        print(f"采样参数: 模糊1={blur_kernel_size}, sigma1={blur_sigma}, 噪声1={noise_sigma}, JPEG1={jpeg_quality}")
         if downsample_scale:
-            print(f"Downsample scale 1: {downsample_scale}")
+            print(f"下采样1倍率: {downsample_scale}")
         if second_order:
-            print(f"Sampled params: blur2={blur_kernel_size_2}, sigma2={blur_sigma_2}, noise2={noise_sigma_2}, jpeg2={jpeg_quality_2}")
+            print(f"采样参数: 模糊2={blur_kernel_size_2}, sigma2={blur_sigma_2}, 噪声2={noise_sigma_2}, JPEG2={jpeg_quality_2}")
             if downsample_scale_2:
-                print(f"Downsample scale 2: {downsample_scale_2}")
+                print(f"下采样2倍率: {downsample_scale_2}")
     
     degraded = img.copy()
     
@@ -163,12 +162,12 @@ def apply_degradation(img, blur_kernel_size=None, blur_sigma=None, noise_sigma=N
 
 
 def process_sequence(input_dir, output_dir_root_path, params_json_path):
-    """Process an entire directory of image sequences.
+    """处理整个序列文件夹
     
     Args:
-        input_dir: Path to the input directory containing sequence subfolders.
-        output_dir_root_path: Root path for degraded output sequences.
-        params_json_path: Path to the degradation parameters JSON file.
+        input_dir: 输入目录路径
+        output_dir_root_path: 根输出目录路径
+        params_json_path: 退化参数JSON文件路径
     """
     input_path_obj = Path(input_dir)
     root_output_path = Path(output_dir_root_path)
@@ -179,7 +178,7 @@ def process_sequence(input_dir, output_dir_root_path, params_json_path):
         if not sequence_dir.is_dir():
             continue
             
-        print(f"Processing sequence: {sequence_dir.name}")
+        print(f"处理序列: {sequence_dir.name}")
         
         if params_json_path:
             json_params = load_degradation_params_from_json(params_json_path)
@@ -196,10 +195,10 @@ def process_sequence(input_dir, output_dir_root_path, params_json_path):
             jpeg_quality_2 = sample_parameter(json_params.get('jpeg_quality_2', 80)) if second_order else None
             downsample_scale_2 = json_params.get('downsample_scale_2') if second_order else None
             
-            print(f"Degradation params for sequence {sequence_dir.name}:")
-            print(f"  Pass 1: blur={blur_kernel_size}, sigma={blur_sigma}, noise={noise_sigma}, jpeg={jpeg_quality}, downsample={downsample_scale}")
+            print(f"序列 {sequence_dir.name} 的退化参数:")
+            print(f"  第一轮: 模糊={blur_kernel_size}, sigma={blur_sigma}, 噪声={noise_sigma}, JPEG={jpeg_quality}, 下采样={downsample_scale}")
             if second_order:
-                print(f"  Pass 2: blur={blur_kernel_size_2}, sigma={blur_sigma_2}, noise={noise_sigma_2}, jpeg={jpeg_quality_2}, downsample={downsample_scale_2}")
+                print(f"  第二轮: 模糊={blur_kernel_size_2}, sigma={blur_sigma_2}, 噪声={noise_sigma_2}, JPEG={jpeg_quality_2}, 下采样={downsample_scale_2}")
         else:
             blur_kernel_size = 3
             blur_sigma = None
@@ -219,7 +218,7 @@ def process_sequence(input_dir, output_dir_root_path, params_json_path):
         for img_file_path in sequence_dir.glob("*.png"):
             img = cv2.imread(str(img_file_path))
             if img is None:
-                print(f"Cannot read image: {img_file_path}")
+                print(f"无法读取图像: {img_file_path}")
                 continue
             
             degraded_img = apply_degradation(
@@ -240,15 +239,15 @@ def process_sequence(input_dir, output_dir_root_path, params_json_path):
             output_image_filepath = sequence_specific_output_dir / img_file_path.name
             cv2.imwrite(str(output_image_filepath), degraded_img)
             
-            print(f"Processed: {img_file_path.name}")
+            print(f"已处理: {img_file_path.name}")
 
 def apply_dynamic_degradation_batch(lq_batch, device, params_json_path):
-    """Apply the same sampled random degradation to all frames in a batch.
+    """对batch中的图像应用相同的随机退化
     
     Args:
-        lq_batch: Image tensor batch of shape [B, T, C, H, W] in range [-1, 1].
-        device: Target device for the output tensors.
-        params_json_path: Path to the degradation parameters JSON file.
+        lq_batch: shape为[B,T,C,H,W]的图像张量batch，值范围[-1,1]
+        device: 处理后张量应该在的设备
+        params_json_path: 退化参数JSON文件路径
     """
     b, t, c, h, w = lq_batch.shape
     
@@ -315,17 +314,17 @@ def apply_dynamic_degradation_batch(lq_batch, device, params_json_path):
     return torch.stack(degraded_batch), degraded_sizes
 
 def apply_dynamic_degradation(img_tensor, device, params_json_path):
-    """Apply random degradation to a single image tensor (backward-compatible wrapper)."""
+    """对单张图像应用随机退化（保持向后兼容）"""
     batch_tensor = img_tensor.unsqueeze(0).unsqueeze(0)  # [1,1,C,H,W]
     degraded_batch, sizes = apply_dynamic_degradation_batch(batch_tensor, device, params_json_path)
     return degraded_batch[0,0], sizes[0]
 
 def apply_realistic_noise(img, noise_sigma):
-    """Apply a simplified realistic noise model (intensity-adaptive Gaussian noise).
+    """应用更真实的噪声模型 - 简化版本
     
     Args:
-        img: Input image (H, W, C).
-        noise_sigma: Noise intensity (standard deviation).
+        img: 输入图像 (H, W, C)
+        noise_sigma: 噪声强度
     """
     img_float = img.astype(np.float32)
     
@@ -344,13 +343,13 @@ def apply_realistic_noise(img, noise_sigma):
 if __name__ == "__main__":
     import argparse
     
-    parser = argparse.ArgumentParser(description="Apply random degradation to image sequences.")
-    parser.add_argument("--input_dir", required=True,
-                       help="Input directory containing image sequence subfolders.")
-    parser.add_argument("--output_dir", required=True,
-                       help="Path to the output directory.")
-    parser.add_argument("--params_json", default='./degradation_params.json',
-                       help="Path to degradation parameters JSON file (optional).")
+    parser = argparse.ArgumentParser(description="对图像序列应用随机退化")
+    parser.add_argument("--input_dir", help="包含图像序列文件夹的输入目录", 
+                       default='/GPFS/public/liangjianfeng/stablevsr/esr/LR')
+    parser.add_argument("--output_dir", help="输出目录的路径", 
+                       default='/GPFS/public/liangjianfeng/stablevsr/esr/degraded')
+    parser.add_argument("--params_json", help="退化参数JSON文件路径（可选）",
+                       default='./params.json')
     args = parser.parse_args()
     
     process_sequence(args.input_dir, args.output_dir, args.params_json)

@@ -1,8 +1,8 @@
 dataset:
   train:
-    dataroot_gt: /remote-home/share/liangjianfeng/REDS/train/
-    dataroot_lq: /remote-home/share/liangjianfeng/REDS-BI/train/
-    meta_info_file: /remote-home/huqiang/liangjianfeng/d-2-vr/dataset/REDS/train_metadata.txt
+    dataroot_gt: /path/to/REDS/train/
+    dataroot_lq: /path/to/REDS-BI/train/
+    meta_info_file: ./dataset/REDS/train_metadata.txt
     dataroot_flow:
     io_backend:
       type: disk
@@ -16,9 +16,9 @@ dataset:
     scale: 4
     remove_partition: False
   test:
-    dataroot_gt: /remote-home/share/liangjianfeng/REDS/val-10/
-    dataroot_lq: /remote-home/share/liangjianfeng/REDS-BI/val-10/
-    meta_info_file: /remote-home/huqiang/liangjianfeng/d-2-vr/dataset/REDS/valid_metadata.txt
+    dataroot_gt: /path/to/REDS/val-10/
+    dataroot_lq: /path/to/REDS-BI/val-10/
+    meta_info_file: ./dataset/REDS/valid_metadata.txt
     io_backend:
       type: disk
     num_frame: 3

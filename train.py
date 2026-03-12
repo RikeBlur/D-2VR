@@ -12,6 +12,7 @@
 # distributed under the License is distributed on an "AS IS" BASIS,
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
+#2025.02.06 ljf
 
 import warnings
 warnings.filterwarnings("ignore")
@@ -510,7 +511,7 @@ def parse_args(input_args=None):
     parser.add_argument("--hub_token", type=str, default=None, help="The token to use to push to the Model Hub.")
     parser.add_argument("--of_model", type=str, default="DRFA", choices=["RAFT", "GMFlow", "FlowFormerPP", "GMA", "DRFA"], help="Optical flow model to use")
     parser.add_argument("--of_path", type=str, default="./DRFA/", help="Path to the optical flow model source code directory (required for GMFlow/FlowFormerPP/GMA/SC)")
-    parser.add_argument("--of_pretrained", type=str, default="/remote-home/share/liangjianfeng/stablevsr/GMA-sc/results/sintel/gma/gma-degradation.pth", help="Path to the optical flow model pretrained weights")
+    parser.add_argument("--of_pretrained", type=str, default=None, help="Path to the optical flow model pretrained weights")
     parser.add_argument("--adv_weight", type=float, default=0.01, help="Weight for the adversarial loss.")
     parser.add_argument("--tlpips_weight", type=float, default=0.1, help="Weight for the tLPIPS loss.")
     parser.add_argument(
@@ -689,7 +690,7 @@ def parse_args(input_args=None):
     parser.add_argument(
         '--disc_model_path',
         type=str,
-        default="/remote-home/share/liangjianfeng/stablevsr/stable-diffusion-2-1-base/",
+        default=None,
         help='Path to the pretrained SD model used to initialize the UNet discriminator backbone.',
     )
     parser.add_argument(

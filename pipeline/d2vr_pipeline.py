@@ -184,16 +184,16 @@ class D2VRPipeline(
         self._print_model_info()
 
     def _print_model_info(self):
-        """Print parameter count and memory usage for each sub-model."""
+        """打印模型参数量和内存占用信息"""
         def count_params(model):
-            """Count total, trainable parameters and memory footprint (MB)."""
+            """统计模型参数量和内存大小"""
             total_params = sum(p.numel() for p in model.parameters())
             trainable_params = sum(p.numel() for p in model.parameters() if p.requires_grad)
             memory_mb = sum(p.numel() * p.element_size() for p in model.parameters()) / (1024 ** 2)
             return total_params, trainable_params, memory_mb
         
         print("=" * 60)
-        print("Model parameter statistics:")
+        print("模型参数统计:")
         print("=" * 60)
         
         models_info = {
@@ -213,10 +213,10 @@ class D2VRPipeline(
                 total_all += total
                 total_trainable += trainable
                 total_memory += memory
-                print(f"{name:15s}: {total:>12,} params ({trainable:>12,} trainable) | {memory:>8.2f} MB")
+                print(f"{name:15s}: {total:>12,} 参数 ({trainable:>12,} 可训练) | {memory:>8.2f} MB")
         
         print("-" * 60)
-        print(f"{'Total':15s}: {total_all:>12,} params ({total_trainable:>12,} trainable) | {total_memory:>8.2f} MB")
+        print(f"{'总计':15s}: {total_all:>12,} 参数 ({total_trainable:>12,} 可训练) | {total_memory:>8.2f} MB")
         print("=" * 60)
 
     # Copied from diffusers.pipelines.stable_diffusion.pipeline_stable_diffusion.StableDiffusionPipeline.enable_vae_slicing
@@ -845,7 +845,8 @@ class D2VRPipeline(
                 A kwargs dictionary that if specified is passed along to the [`AttentionProcessor`] as defined in
                 [`self.processor`](https://github.com/huggingface/diffusers/blob/main/src/diffusers/models/attention_processor.py).
             
-            controlnet_conditioning_scale (`float` or `List[float]`, *optional*, defaults to 1.0):
+            重要：
+                controlnet_conditioning_scale (`float` or `List[float]`, *optional*, defaults to 1.0):
                     The outputs of the ControlNet are multiplied by `controlnet_conditioning_scale` before they are added
                     to the residual in the original `unet`. If multiple ControlNets are specified in `init`, you can set
                     the corresponding scale as a list.

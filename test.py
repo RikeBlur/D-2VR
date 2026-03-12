@@ -24,7 +24,7 @@ def center_crop(im, size=128):
 # get arguments
 parser = argparse.ArgumentParser(description="Test code for StableVSR.")
 parser.add_argument("--out_path", default='./results/', type=str, help="Path to output folder.")
-parser.add_argument("--in_path", type=str, default='/remote-home/share/liangjianfeng/stablevsr/test_dataset/LR', help="Path to input folder (containing sets of LR images).")
+parser.add_argument("--in_path", type=str, default=None, help="Path to input folder (containing sets of LR images).")
 parser.add_argument("--num_inference_steps", type=int, default=4, help="Number of sampling steps")
 parser.add_argument("--controlnet_ckpt", type=str, required=True, help="Path to your folder with the controlnet checkpoint.")
 parser.add_argument("--unet_ckpt", type=str, required=True, help="Path to your folder with the unet checkpoint.")
@@ -33,7 +33,7 @@ parser.add_argument("--model_path", type=str, required=True, help="Path to the S
 parser.add_argument("--scheduler", type=str, default="DDPM", help="Scheduler type to use (e.g., DPMSolverPlusPlus, EulerAncestralDiscrete)")
 parser.add_argument("--of_model", type=str, default="DRFA", choices=["RAFT", "GMFlow", "FlowFormerPP", "GMA", "DRFA"], help="Optical flow model to use")
 parser.add_argument("--of_path", type=str, default="./DRFA/", help="Path to the optical flow model source code directory (required for GMFlow/FlowFormerPP/GMA/SC)")
-parser.add_argument("--of_pretrained", type=str, default="/remote-home/share/liangjianfeng/stablevsr/GMA-sc/results/sintel/gma/gma-degradation.pth", help="Path to the optical flow model pretrained weights")
+parser.add_argument("--of_pretrained", type=str, default=None, help="Path to the optical flow model pretrained weights")
 
 args = parser.parse_args()
 

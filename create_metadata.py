@@ -1,17 +1,19 @@
 import os
 import cv2
 import random
-import argparse
 from pathlib import Path
 from tqdm import tqdm
 
+gt_root = "/mnt/sjtu/liangjianfeng/REDS/"
+lq_root = "/mnt/sjtu/liangjianfeng/REDS-BI/"
+output_dir = "/home/liangjianfeng/stablevsr-2026/dataset/REDS"
+train_output_file = f"{output_dir}/train_metadata.txt"
+valid_output_file = f"{output_dir}/valid_metadata.txt"
 
-def create_metadata(gt_root, lq_root, output_dir):
-    train_output_file = os.path.join(output_dir, "train_metadata.txt")
-    valid_output_file = os.path.join(output_dir, "valid_metadata.txt")
+os.makedirs(output_dir, exist_ok=True)
 
-    os.makedirs(output_dir, exist_ok=True)
 
+def create_metadata():
     subsets = {
         'train': train_output_file,
         'val': valid_output_file
@@ -74,12 +76,4 @@ def create_metadata(gt_root, lq_root, output_dir):
         print(f"Metadata saved to {output_file}")
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description="Create metadata files for REDS dataset.")
-    parser.add_argument("--gt_root", type=str, required=True,
-                        help="Path to the GT (ground truth) REDS dataset root directory.")
-    parser.add_argument("--lq_root", type=str, required=True,
-                        help="Path to the LQ (low quality) REDS dataset root directory.")
-    parser.add_argument("--output_dir", type=str, default="./dataset/REDS",
-                        help="Directory to save the generated metadata files (default: ./dataset/REDS).")
-    args = parser.parse_args()
-    create_metadata(args.gt_root, args.lq_root, args.output_dir)
+    create_metadata()

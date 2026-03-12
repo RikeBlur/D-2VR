@@ -43,7 +43,7 @@ REDS-BI/
 
 Generate the metadata files required by the dataloader:
 ```bash
-python create_metadata.py --gt_root /path/to/REDS --lq_root /path/to/REDS-BI --output_dir ./dataset/REDS
+python create_metadata.py
 ```
 
 Then update the paths in `dataset/REDS/config_test.yaml` accordingly.

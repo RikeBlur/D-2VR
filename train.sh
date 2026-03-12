@@ -1,11 +1,11 @@
 python train.py \
   --pretrained_model_name_or_path="claudiom4sir/StableVSR" \
   --pretrained_vae_model_name_or_path="claudiom4sir/StableVSR" \
-  --controlnet_model_name_or_path="/remote-home/share/liangjianfeng/stablevsr/StableVSR/controlnet/" \
-  --unet_model_name_or_path="/remote-home/share/liangjianfeng/stablevsr/StableVSR/unet/" \
-  --output_dir="/remote-home/share/liangjianfeng/D2VR/delight/ckpt/REDS+SC+all/" \
-  --logging_dir="/remote-home/share/liangjianfeng/D2VR/delight/ckpt/REDS+SC+all/logs/0126/" \
-  --dataset_config_path="/remote-home/huqiang/liangjianfeng/d-2-vr/dataset/REDS/config_test.yaml" \
+  --controlnet_model_name_or_path="/path/to/controlnet/" \
+  --unet_model_name_or_path="/path/to/unet/" \
+  --output_dir="/path/to/output/" \
+  --logging_dir="/path/to/output/logs/" \
+  --dataset_config_path="./dataset/REDS/config_test.yaml" \
   --degradation_params_json ./degradation/degradation_params.json \
   --G_lr=1e-5 \
   --D_lr=1e-5 \

@@ -17,8 +17,7 @@ import os
 def build_disc(basemodel, multiscale_D=False):
     basemodel = os.path.normpath(basemodel)
     if basemodel in [
-                    os.path.normpath('/mnt/uhd/sjtu/liangjianfeng/stablevsr/stable-diffusion-2-1-base'),
-                    os.path.normpath('/remote-home/share/liangjianfeng/stablevsr/stable-diffusion-2-1-base'),
+                    'claudiom4sir/StableVSR',
                     'stabilityai/stable-diffusion-2-1-base',
                     'stabilityai/stable-diffusion-xl-base-1.0']:
         from .unet_D import Discriminator
